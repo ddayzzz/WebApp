@@ -358,8 +358,9 @@ async def test(loop):
     print('updating okay')
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(test(loop))
-loop.close()
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(test(loop))
+    loop.close()
 
 
