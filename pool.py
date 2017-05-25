@@ -310,6 +310,7 @@ class Model(dict, metaclass=ModelMetaclass):
 
 
 class User(Model):
+        __table__ = 'User'
         idb = IntegerField('idb', primary_key=True)
         username = StringField('username')
         email = StringField('email')
