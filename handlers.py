@@ -1,18 +1,16 @@
 # coding=utf-8
-import asyncio
-import webform
-
-
-__author__ = 'Michael Liao'
+# 路由与处理绑定的模块
+from webform import get, post
+import models
 
 ' url handlers '
 
 
-@webform.get('/blog/{id}&{un}')
-def get_blog_get(**kw):
-    return dict(**kw)
+@get('/')
+async def index(request):
+    users = await models.User.findAll()
+    return {
+        '__template__': 'home.html',  # 指定了模板的网页
+        'users': users
+    }
 
-
-@webform.post('/login')
-def get_login_post(*kw):
-    return dict(*kw)

@@ -293,7 +293,7 @@ class Model(dict, metaclass=ModelMetaclass):
         print(self.__insert__)
         rows = await execute(self.__insert__, args)
         if rows != 1:
-            pass  # logging.warn('failed to insert record: affected rows: %s' % rows)
+            pass  # logging.warn('failed to insert record: affected rows: %s' % rows)  # 这些会报错不知道为什么
 
     async def update(self):
         args = list(map(self.getValue, self.__fields__))
@@ -309,14 +309,6 @@ class Model(dict, metaclass=ModelMetaclass):
             pass  # logging.warn('failed to remove by primary key: affected rows: %s' %rows)
 
 
-class User(Model):
-        __table__ = 'User'
-        idb = IntegerField('idb', primary_key=True)
-        username = StringField('username')
-        email = StringField('email')
-        password = StringField('password')
-
-
 async def destory_pool():
     global __pool
     if __pool is not None:
@@ -324,6 +316,7 @@ async def destory_pool():
         await __pool.wait_closed()
 
 
+""" 不需要的测试代码
 async def insert(loop):
     await create_pool(loop=loop, user='dev', password='19971222', db='users', host='localhost', port=3306)
     # 创建一个实例：
@@ -363,5 +356,6 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(test(loop))
     loop.close()
+"""
 
 

@@ -1,12 +1,12 @@
 # coding=utf-8
 # Thanks to https://github.com/icemilk00/Python_L_Webapp/blob/master/www/app.py
-__author__ = 'Michael Liao'
 
-'''
-async web application.
-'''
+"""
+异步http服务器端
+"""
 
-import logging; logging.basicConfig(level=logging.INFO)
+import logging 
+logging.basicConfig(level=logging.INFO)
 
 import asyncio, os, json, time
 from datetime import datetime
@@ -14,20 +14,22 @@ from datetime import datetime
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 
-import pool
-from webform import add_routes, add_static
+import pool  # 数据库连接存储池
+from webform import add_routes, add_static  # web框架
 
 # import config
 import config
 
+
+# 定义模板引擎 http://docs.jinkan.org/docs/jinja2/
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = dict(
-        autoescape = kw.get('autoescape', True),
-        block_start_string = kw.get('block_start_string', '{%'),
-        block_end_string = kw.get('block_end_string', '%}'),
-        variable_start_string = kw.get('variable_start_string', '{{'),
-        variable_end_string = kw.get('variable_end_string', '}}'),
+        autoescape=kw.get('autoescape', True),
+        block_start_string=kw.get('block_start_string', '{%'),
+        block_end_string=kw.get('block_end_string', '%}'),
+        variable_start_string=kw.get('variable_start_string', '{{'),
+        variable_end_string=kw.get('variable_end_string', '}}'),
         auto_reload = kw.get('auto_reload', True)
     )
     path = kw.get('path', None)
@@ -46,11 +48,11 @@ def init_jinja2(app, **kw):
 async def logger_factory(app, handler):
     async def logger(request):
         logging.info('Request: %s %s' % (request.method, request.path))
-        # await asyncio.sleep(0.3)
         return (await handler(request))  # 转到下一步response_factory
     return logger
 
 
+# 数据处理
 async def data_factory(app, handler):
     async def parse_data(request):
         if request.method == 'POST':
@@ -64,6 +66,7 @@ async def data_factory(app, handler):
     return parse_data
 
 
+# 响应的抽象工厂
 async def response_factory(app, handler):
     async def response(request):
         logging.info('Response handler...')
