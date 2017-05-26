@@ -1,4 +1,5 @@
 # coding=utf-8
+# Thanks to https://github.com/icemilk00/Python_L_Webapp/blob/master/www/app.py
 __author__ = 'Michael Liao'
 
 '''
@@ -15,6 +16,9 @@ from jinja2 import Environment, FileSystemLoader
 
 import pool
 from webform import add_routes, add_static
+
+# import config
+import config
 
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
@@ -37,12 +41,15 @@ def init_jinja2(app, **kw):
             env.filters[name] = f
     app['__templating__'] = env
 
+
+# 显示一个请求
 async def logger_factory(app, handler):
     async def logger(request):
         logging.info('Request: %s %s' % (request.method, request.path))
         # await asyncio.sleep(0.3)
-        return (await handler(request))
+        return (await handler(request))  # 转到下一步response_factory
     return logger
+
 
 async def data_factory(app, handler):
     async def parse_data(request):
@@ -56,10 +63,11 @@ async def data_factory(app, handler):
         return (await handler(request))
     return parse_data
 
+
 async def response_factory(app, handler):
     async def response(request):
         logging.info('Response handler...')
-        r = await handler(request)
+        r = await handler(request)  # 等待logger的处理完成
         if isinstance(r, web.StreamResponse):
             return r
         if isinstance(r, bytes):
@@ -92,7 +100,9 @@ async def response_factory(app, handler):
         resp = web.Response(body=str(r).encode('utf-8'))
         resp.content_type = 'text/plain;charset=utf-8'
         return resp
-    return response
+    # 这都返回了正确的构造对象
+    return response  # 处理完成 现在都是Response的对象 接下来就有路由关联的函数处理，也就是ResponseHandler
+
 
 def datetime_filter(t):
     delta = int(time.time() - t)
@@ -107,15 +117,18 @@ def datetime_filter(t):
     dt = datetime.fromtimestamp(t)
     return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)
 
+
 async def init(loop):
-    # await webform.create_pool(loop=loop, host='127.0.0.1', port=3306, user='www', password='www', db='awesome')
+    conf = config.configs
+    await pool.create_pool(loop=loop, host=conf['db']['host'], port=conf['db']['port'], user=conf['db']['user'], password=conf['db']['password'], db=conf['db']['db'])
+    # middlewares 是中间件，响应会经过logger_factor -> response_factory处理。handler是下一个处理对象
     app = web.Application(loop=loop, middlewares=[
         logger_factory, response_factory
     ])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
     add_static(app)
-    srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
+    srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000, )
     logging.info('server started at http://127.0.0.1:9000...')
     return srv
 
