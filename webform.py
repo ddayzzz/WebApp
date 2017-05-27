@@ -52,14 +52,19 @@ class RequestHandler(object):
         required_args = inspect.signature(self._func).parameters
         logging.info('required args: %s' % required_args)
         # 获取从GET或POST传进来的参数值，如果函数参数表有这参数名就加入
-        
+
         if request.method == 'POST':
-            kw = {arg: value for arg, value in request.__data__.items() if arg in required_args}
+            kw = {arg: value for arg, value in request.__data__.items() if arg in required_args}  # POST需要进行参数的一些转换，这个转换在data工厂中。数据存储在__data__属性中
         else:
-            kw = {arg: value for arg, value in request.itmes() if arg in required_args}
+            # GET参数有可能需要类似于http://xxx.com/blog?id=5&name=ff之类的参数
+            qs = request.query_string
+            if qs:
+                logging.info('query parameters: %s' % request.query_string)
+                kw = {arg: value[0] for arg, value in parse.parse_qs(qs, True).items()}  # 保留空格。将查询参数添加到kw已知的参数列表 ref https://raw.githubusercontent.com/icemilk00/Python_L_Webapp/master/www/coroweb.py
+            else:
+                kw = {arg: value for arg, value in request.match_info.items() if arg in required_args}
         # 获取match_info的参数值，例如@get('/blog/{id}')之类的参数值
         kw.update(request.match_info)
-
         # 如果有request参数的话也加入
         if 'request' in required_args:
             kw['request'] = request

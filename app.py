@@ -56,11 +56,12 @@ async def logger_factory(app, handler):
 async def data_factory(app, handler):
     async def parse_data(request):
         if request.method == 'POST':
+            # 检查HTTP头的Content-Type
             if request.content_type.startswith('application/json'):
-                request.__data__ = await request.json()
+                request.__data__ = await request.json()  # 格式化为JSON
                 logging.info('request json: %s' % str(request.__data__))
             elif request.content_type.startswith('application/x-www-form-urlencoded'):
-                request.__data__ = await request.post()
+                request.__data__ = await request.post()  # 这个是表格的
                 logging.info('request form: %s' % str(request.__data__))
         return (await handler(request))
     return parse_data

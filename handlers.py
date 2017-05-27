@@ -15,13 +15,23 @@ async def index(request):
     }
 
 
-@get('/blog/{id}')
-async def blog(id):
+# 可以自定义查询参数的blog示例
+@get('/blog')
+async def blog(username, email='ff', **kw):
+    print(kw)
     return {
-        id
+        username,
+        email
     }
 
 
+# match_path指定的类型
+@get('/blog/{id}')
+async def blog_id(id):
+    return id
+
+
+# POST接受
 @post('/login')
 async def login(username, password, email='none'):
     return {
