@@ -14,3 +14,19 @@ async def index(request):
         'users': users
     }
 
+
+@get('/blog/{id}')
+async def blog(id):
+    return {
+        id
+    }
+
+
+@post('/login')
+async def login(username, password, email='none'):
+    return {
+        'hahaha',
+        username,
+        password,
+        email
+    }

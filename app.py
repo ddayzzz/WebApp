@@ -126,7 +126,7 @@ async def init(loop):
     await pool.create_pool(loop=loop, host=conf['db']['host'], port=conf['db']['port'], user=conf['db']['user'], password=conf['db']['password'], db=conf['db']['db'])
     # middlewares 是中间件，响应会经过logger_factor -> response_factory处理。handler是下一个处理对象
     app = web.Application(loop=loop, middlewares=[
-        logger_factory, response_factory
+        logger_factory, data_factory, response_factory
     ])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')

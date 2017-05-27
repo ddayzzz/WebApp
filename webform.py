@@ -40,7 +40,6 @@ def post(path):
     return decorator
 
 
-
 # 通用响应处理器类
 class RequestHandler(object):
 
@@ -53,8 +52,11 @@ class RequestHandler(object):
         required_args = inspect.signature(self._func).parameters
         logging.info('required args: %s' % required_args)
         # 获取从GET或POST传进来的参数值，如果函数参数表有这参数名就加入
-        kw = {arg: value for arg, value in request.match_info.keys() if arg in required_args}
-        print(request.match_info.keys())
+        
+        if request.method == 'POST':
+            kw = {arg: value for arg, value in request.__data__.items() if arg in required_args}
+        else:
+            kw = {arg: value for arg, value in request.itmes() if arg in required_args}
         # 获取match_info的参数值，例如@get('/blog/{id}')之类的参数值
         kw.update(request.match_info)
 

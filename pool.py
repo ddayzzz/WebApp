@@ -278,7 +278,7 @@ class Model(dict, metaclass=ModelMetaclass):
         if len(rs) == 0:
             return None
         return rs[0]['__num__']
-    
+
     @classmethod
     async def find(cls, primarykey):
         '''find object by primary key'''
@@ -293,20 +293,20 @@ class Model(dict, metaclass=ModelMetaclass):
         print(self.__insert__)
         rows = await execute(self.__insert__, args)
         if rows != 1:
-            pass  # logging.warn('failed to insert record: affected rows: %s' % rows)  # 这些会报错不知道为什么
+            logging.warn('failed to insert record: affected rows: %s' % rows)  # 这些会报错不知道为什么
 
     async def update(self):
         args = list(map(self.getValue, self.__fields__))
         args.append(self.getValue(self.__primary_key__))
         rows = await execute(self.__update__, args)
         if rows != 1:
-            pass  # logging.warn('failed to update by primary key: affected rows: %s' % rows)
+            logging.warn('failed to update by primary key: affected rows: %s' % rows)
 
     async def remove(self):
         args = [self.getValue(self.__primary_key__)]
         rows = await execute(self.__delete__, args)
         if rows != 1:
-            pass  # logging.warn('failed to remove by primary key: affected rows: %s' %rows)
+            logging.warn('failed to remove by primary key: affected rows: %s' %rows)
 
 
 async def destory_pool():
