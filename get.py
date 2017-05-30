@@ -1,5 +1,6 @@
 # coding=utf-8
 #  GET发送请求 
+# GET http://docs.python-requests.org/zh_CN/latest/user/quickstart.html#url
 import requests
 
 
