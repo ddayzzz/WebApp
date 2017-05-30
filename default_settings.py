@@ -8,7 +8,7 @@ configs = {
         'port': 3306,
         'user': 'dev',
         'password': '19971222',
-        'db': 'users'
+        'db': 'MyBlog'
     },
     'session': {
         'secret': 'awEsomE'

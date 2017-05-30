@@ -1,0 +1,25 @@
+{% extends '__base__.html' %}
+{% block title %}Ddayzzz的博客{% endblock %}
+{% block content %}
+<div class="uk-width-medium-3-4 uk-margin-top">
+    {% for blog in blogs %}
+    <article class="uk-article">
+        <h2><a href="/blog/{{ blog.id }}">{{ blog.name }}</a></h2>
+        <p class="uk-article-meta">发表于{{ blog.created_at|datetime }}</p>
+        <p>{{ blog.summary }}</p>
+        <p><a href="/blog/{{ blog.id }}">继续阅读<i class="uk-icon-angle-double-right"></i></a></p>
+    </article>
+    <hr class="uk-article-divider">
+    {% endfor %}
+</div>
+<!--右侧的导航栏 -->
+<div class="uk-width-medium-1-4">
+    <div class="uk-panel uk-panel-header">
+        <h3 class="uk-panel-title">分类目录</h3>
+        <ul class="uk-list uk-list-line">
+            <li><i class="uk-icon-bookmark"></i><a href="/catagory?key=python">Python</a></li>
+            <li><i class="uk-icon-bookmark"></i><a href="/catagory?key=tensorflow">Tensorflow</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
