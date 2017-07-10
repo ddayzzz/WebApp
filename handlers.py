@@ -20,6 +20,7 @@ async def index(request):
     }
 
 
+"""
 # 可以自定义查询参数的blog示例
 @get('/blog')
 async def blog(username, email='ff', **kw):
@@ -45,3 +46,4 @@ async def login(username, password, email='none'):
         password,
         email
     }
+"""
