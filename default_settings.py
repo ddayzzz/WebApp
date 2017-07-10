@@ -12,5 +12,7 @@ configs = {
     },
     'session': {
         'secret': 'awEsomE'
-    }
+    },
+    'host': 'localhost',
+    'port': 80
 }

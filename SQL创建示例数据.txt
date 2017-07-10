@@ -1,0 +1,7 @@
+create table users(
+`id` bigint,
+`username` varchar(50) not null,
+`email` bool not null,
+`password` varchar(50) not null,
+primary key (`id`)
+) engine=innodb default charset=utf8;
